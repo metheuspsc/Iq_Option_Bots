@@ -44,7 +44,8 @@ def preview():
     timestamp = API.get_server_timestamp()
     hora = timestamp_converter(timestamp)
     velas = []
-
+    
+    #Pega os últimos 20mil candles e cria um dataframe
     for i in range(20):
         X = API.get_candles(par, 60, 1000, timestamp)
         timestamp = int(X[0]['from'])-1
