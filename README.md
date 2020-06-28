@@ -5,8 +5,8 @@ Bots for automating Binary Option Trading.
 API used on Bots: https://github.com/Lu-Yi-Hsun/iqoptionapi
 
 Inspired by Youtube Channels: 
-Iq Coding (https://www.youtube.com/channel/UC51qSJBV60nneZXVNgM-bKQ)
-/nSigma Coding (https://www.youtube.com/channel/UCBsTB02yO0QGwtlfiv5m25Q)
+-Iq Coding (https://www.youtube.com/channel/UC51qSJBV60nneZXVNgM-bKQ)
+-Sigma Coding (https://www.youtube.com/channel/UCBsTB02yO0QGwtlfiv5m25Q)
 
 </div><br><br>
 <div align="center">
