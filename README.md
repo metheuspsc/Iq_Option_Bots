@@ -1,6 +1,6 @@
 # Iq_Option_Bots
 
-Bots for automating Binary Option Trading
+Bots for automating Binary Option Trading.
 
 Bots usando a API: https://github.com/Lu-Yi-Hsun/iqoptionapi
 
