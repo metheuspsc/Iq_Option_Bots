@@ -68,7 +68,7 @@ def banca():
 
 print('Banca:', banca()) #pega valor da Banca
 par = 'USDJPY' 
-valor_entrada = float(int(banca()) // 10) #inicia entradas com 10% da banca
+valor_entrada = float(int(banca()) // 10) if int(banca()) > 20 else 2 #inicia entradas com 10% da banca ou 2 (mínimo possível)
 valor_entrada_b = float(valor_entrada)
 
 martingale = int(1)
