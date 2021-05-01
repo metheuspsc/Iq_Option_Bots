@@ -23,7 +23,7 @@ def timestamp_converter(x):  # Função para converter timestamp
     return hora
 
 
-API = IQ_Option('matheuspessoax@gmail.com', 'xereca123')
+API = IQ_Option('', '')
 API.connect()
 API.change_balance('PRACTICE')
 par = 'EURUSD'
