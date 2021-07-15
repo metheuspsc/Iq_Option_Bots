@@ -7,7 +7,6 @@ from dateutil import tz
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -24,10 +23,10 @@ def timestamp_converter(x):  # Função para converter timestamp
     return hora
 
 
-API = IQ_Option('Login', 'Senha')
+API = IQ_Option('', '')
 API.connect()
 API.change_balance('PRACTICE')
-par = 'GBPJPY'
+par = 'EURUSD'
 
 while True:
     if API.check_connect() == False:
@@ -44,15 +43,15 @@ def preview():
     timestamp = API.get_server_timestamp()
     hora = timestamp_converter(timestamp)
     velas = []
-    
-    #Pega os últimos 20mil candles e cria um dataframe
-    for i in range(20):
-        X = API.get_candles(par, 60, 1000, timestamp)
+
+    for i in range(10):
+        X = API.get_candles(par, 300, 1000, timestamp)
         timestamp = int(X[0]['from'])-1
         velas += X
 
     price_data = pd.DataFrame(velas)
     price_data.sort_values(by=['from'], inplace=True, ascending=True)
+    price_data.drop(price_data.tail(1).index, inplace=True)
     price_data = price_data[['from', 'close', 'min', 'max', 'volume']]
     price_data['change_price'] = price_data['close'].diff()
 
@@ -98,11 +97,15 @@ def preview():
     price_data['Price_Rate_Of_Change'] = price_data['close'].transform(
         lambda x: x.pct_change(periods=n))
     price_data['RSI'] = relative_strength_index
+    # price_data['low_14'] = low_14
+    # price_data['high_14'] = high_14
     price_data['k_percent'] = k_percent
     price_data['r_percent'] = r_percent
     price_data['MACD'] = macd
     price_data['MACD_EMA'] = ema_9_macd
-    
+
+    # pd.DataFrame(price_data).to_csv('price_data.csv', index_label=False)
+
     # Predictions
     close_groups = price_data['close']
     close_groups = close_groups.transform(lambda x: np.sign(x.diff()))
@@ -110,6 +113,7 @@ def preview():
     price_data.loc[price_data['Prediction'] == 0.0] = 1.0
 
     # Any row that has a `NaN` value will be dropped.
+
     price_data = price_data.dropna()
 
     # Grab our X & Y Columns.
@@ -134,13 +138,29 @@ def preview():
     print('Assertividade (%): ', accuracy_score(
         y_test, rand_frst_clf.predict(X_test), normalize=True) * 100.0)
 
-    tradeMap = {-1.0: "put", 1.0: "call", 0.0: "call"}
+    tradeMap = {-1.0: "put", 1.0: "call", 0.0: "Null"}
     teste = timestamp_converter(price_data['from'].iloc[-1])
-    teste = teste + timedelta(seconds=60)
-    result = pd.DataFrame([teste+timedelta(seconds=60*i) for i in range(len(y_pred))],
-                          [tradeMap[y_pred[i]] for i in range(len(y_pred))])
+    print('ultimo candle dentro do modelo:',
+          str(teste)[-11:-6], tradeMap[price_data['Prediction'].iloc[-1]])
+
+    # Fechamento da última vela
+
+    teste = teste + timedelta(seconds=300)
+    d = {'From': [teste+timedelta(seconds=300*i) for i in range(len(y_pred))], 'Pred': [
+        tradeMap[y_pred[i]] for i in range(len(y_pred))]}
+    result = pd.DataFrame(d)
 
     return result
+
+
+def stop_check(lucro, gain, loss):
+    if lucro <= float('-' + str(abs(loss))):
+        print('Stop Loss batido!')
+        sys.exit()
+
+    if lucro >= float(abs(gain)):
+        print('Stop Gain Batido!')
+        sys.exit()
 
 
 def banca():
@@ -148,19 +168,21 @@ def banca():
 
 
 valor_entrada = 0
-valor = 0
+stop_loss = float(int(banca()) // 5)
+stop_gain = float(int(banca()) // 2)
 lucro = 0
 
-# Realiza 5 entradas baseado na ultima previsão do modelo, após isso realiza uma nova previsão
 while True:
 
-    ids = []
-    df = preview().head(5)
+    valor = 0
+    erro = False
+    df = preview().head(2)
+    print(df)
+    ult_tempo = API.get_server_timestamp()
 
     for row in df.itertuples():
         valor_entrada = float(int(banca()) // 10)
-
-        bs = row[0]
+        bs = row[2]
         sinal = row[1]
 
         while True:
@@ -168,14 +190,52 @@ while True:
             tempo_servidor = timestamp_converter(
                 API.get_server_timestamp())
 
-            if tempo_servidor + timedelta(seconds=3) == sinal:
-                valor_entrada = float(int(banca()) // 10)
-                print('Entrou', bs, sinal, '\nEntrada:', valor_entrada)
-                status, id = API.buy_digital_spot(
-                    par, valor_entrada, bs, 1)
-                ids.append(id)
-                time.sleep(1)
+            if tempo_servidor + timedelta(seconds=2) == sinal:
+
+                ult_vela = API.get_candles(
+                    par, 300, 1, API.get_server_timestamp())
+                ult_vela = 'call' if ult_vela[0]['open'] < ult_vela[0][
+                    'close'] else 'put' if ult_vela[0]['open'] > ult_vela[0]['close'] else 'Nulo'
+
+                print('Ultimo Fechamento:', ult_vela)
+                print('Teste:', df['Pred'].iloc[0])
+
+                if ult_vela == df['Pred'].iloc[0]:
+
+                    valor_entrada = float(int(banca()) // 10)
+                    print('Entrou', bs, sinal, '\nEntrada:', valor_entrada)
+                    status, id = API.buy_digital_spot(
+                        par, valor_entrada, bs, 5)
+
+                    if status:
+                        while True:
+
+                            status, valor = API.check_win_digital_v2(id)
+
+                            if status:
+                                valor = valor if valor > 0 else float(
+                                    '-' + str(abs(valor_entrada)))
+                                lucro += round(valor, 2)
+
+                                print('\nWIN:' if valor > 0 else '\nLOSS:', round(valor, 2), '\nLucro Líquido:',
+                                      round(lucro, 2))
+
+                                stop_check(lucro, stop_gain, stop_loss)
+
+                                break
+                    else:
+                        print('\nERRO AO REALIZAR ORDEM\n\n')
+
+                else:
+                    print('Modelo Errou Primeira Previsão')
+                    erro = True
 
             if tempo_servidor > sinal:
-                print('Próximo Sinal')
                 break
+
+            elif erro:
+                break
+
+    if valor < 0 or erro:
+        print('Modelo Errou, Recalculando...')
+        time.sleep(10)
