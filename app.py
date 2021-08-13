@@ -18,11 +18,11 @@ def core():
     password = st.sidebar.text_input("Password", type="password")
     pair = st.sidebar.selectbox("Select pair to trade", ["EURUSD"])
     account_type = st.sidebar.selectbox("Select balance type", ["PRACTICE"])
-    exchange_name = st.sidebar.selectbox('Select Exchange', ["IQ Option"])
-    bot_type = st.sidebar.selectbox('Select Bot Type', ["Random Forests"])
-    entry_value = st.sidebar.number_input('Select entry value', 10)
-    stop_gain = st.sidebar.number_input('Select stop gain value', 100)
-    stop_loss = st.sidebar.number_input('Select stop loss value', 100)
+    exchange_name = st.sidebar.selectbox("Select Exchange", ["IQ Option"])
+    bot_type = st.sidebar.selectbox("Select Bot Type", ["Random Forests"])
+    entry_value = st.sidebar.number_input("Select entry value", 10)
+    stop_gain = st.sidebar.number_input("Select stop gain value", 100)
+    stop_loss = st.sidebar.number_input("Select stop loss value", 100)
 
     if st.sidebar.button("Run"):
 
@@ -38,7 +38,10 @@ def core():
 
         if bot_type == "Random Forests":
             bot = RandomForestBot(
-                exchange=exchange, entry_value=entry_value, stop_gain=stop_gain, stop_loss=stop_loss
+                exchange=exchange,
+                entry_value=entry_value,
+                stop_gain=stop_gain,
+                stop_loss=stop_loss,
             )
         else:
             raise NoBotException()

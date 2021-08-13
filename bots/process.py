@@ -42,8 +42,8 @@ class DataProcessor:
 
         self.df["k_percent"] = 100 * ((self.df["close"] - low_14) / (high_14 - low_14))
         self.df["r_percent"] = (
-                                       (high_14 - self.df["close"]) / (high_14 - low_14)
-                               ) * -100
+            (high_14 - self.df["close"]) / (high_14 - low_14)
+        ) * -100
 
     def calc_macd(self):
         ema_26 = self.df["close"].ewm(span=26).mean()

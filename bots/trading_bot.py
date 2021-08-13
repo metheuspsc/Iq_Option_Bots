@@ -36,9 +36,7 @@ class TradingBot(ABC):
         valor = valor if valor > 0 else float("-" + str(abs(self.entry_value)))
         self.lucro += round(valor, 2)
 
-        st.info(
-            f"WIN:{round(valor, 2)}" if valor > 0 else f"LOSS:{round(valor, 2)}"
-        )
+        st.info(f"WIN:{round(valor, 2)}" if valor > 0 else f"LOSS:{round(valor, 2)}")
         st.info(f"Lucro Líquido:{round(self.lucro, 2)}")
         self.stop_check()
 
@@ -52,7 +50,9 @@ class TradingBot(ABC):
 
     def run(self):
 
-        st.info(f"Iniciando sessão.\nPar: {self.exchange.pair} \nStop Loss: {self.stop_loss} \nStop Gain: {self.stop_gain}")
+        st.info(
+            f"Iniciando sessão.\nPar: {self.exchange.pair} \nStop Loss: {self.stop_loss} \nStop Gain: {self.stop_gain}"
+        )
         st.info(f"Par: {self.exchange.pair}")
         st.info(f"Stop Loss: {self.stop_loss}")
         st.info(f"Stop Gain: {self.stop_gain}")
