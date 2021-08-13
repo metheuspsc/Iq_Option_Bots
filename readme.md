@@ -35,6 +35,3 @@ Make a donation on.
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GSZBCGK7Z465J&source=url">
     <img src="https://raw.githubusercontent.com/iqoptionapi/iqoptionapi/master/docs/paypal-donate-button.png"
         alt="English" width="200" height="80" />
-
-
-[⬆ Voltar ao topo](#nome-do-projeto)<br>
