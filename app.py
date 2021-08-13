@@ -2,7 +2,6 @@ import streamlit as st
 
 from bots.rf_bot import RandomForestBot
 from exchanges.iq_option_exchange import IQOptionExchange
-import base64
 
 
 def core():
