@@ -2,10 +2,17 @@ import streamlit as st
 
 from bots.rf_bot import RandomForestBot
 from exchanges.iq_option_exchange import IQOptionExchange
+import base64
 
 
 def core():
-    st.title("World's most amazing trading bots!!!")
+    image = "static/personagem2.png"
+
+    col1, mid, col2 = st.columns([30, 10, 40])
+    with col1:
+        st.image(image, use_column_width=True)
+    with col2:
+        st.write("# World's most amazing trading bots!!!")
 
     username = st.sidebar.text_input("Username")
     password = st.sidebar.text_input("Password", type="password")
