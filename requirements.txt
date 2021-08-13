@@ -1,4 +1,3 @@
-pip~=21.2.4
 streamlit~=0.86.0
 pandas~=1.2.4
 sklearn~=0.0
