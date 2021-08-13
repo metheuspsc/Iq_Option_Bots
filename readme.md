@@ -6,6 +6,17 @@
 
 > Bots for automating Binary Option Trading.
 
+### Changelog and Roadmap
+
+The project is still under development and next releases will focus on the following:
+
+- [x] Version 2.0: Now we are a web app!
+    - Refactored code for better extendability
+    - Created user interface
+   
+- [] Add more strategies.
+
+
 ## 💻 Getting started
 
 * Make sure you have `<python 3.9>`
