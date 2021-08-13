@@ -25,7 +25,7 @@ $ pip install -r requirements.txt
 ## ☕ Running the project
 
 ```
-$ streamlit run app
+$ streamlit run app.py
 ```
 ## 😄 Want to help keeping the project?<br>
 
