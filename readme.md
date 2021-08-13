@@ -8,6 +8,7 @@
 <img src="static/personagem2.png">
 
 > Bots for automating Binary Option Trading.
+> You can also try the live version here: https://share.streamlit.io/metheuspsc/iq_option_bots/app.py
 
 ### Changelog and Roadmap
 
