@@ -9,7 +9,6 @@ class Exchange(ABC):
     username: str
     password: str
     account_type: str
-    pair: str
 
     @property
     @abstractmethod
@@ -22,5 +21,5 @@ class Exchange(ABC):
         pass
 
     @abstractmethod
-    def candles_to_df(self) -> pd.DataFrame:
+    def candles_to_df(self,pair) -> pd.DataFrame:
         pass
