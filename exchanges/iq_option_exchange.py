@@ -28,12 +28,12 @@ class IQOptionExchange(Exchange):
     def balance(self) -> float:
         return self.api.get_balance()
 
-    def candles_to_df(self):
+    def candles_to_df(self, pair):
         timestamp = self.api.get_server_timestamp()
         velas = []
 
         for _ in range(5):
-            x = self.api.get_candles(self.pair, 300, 1000, timestamp)
+            x = self.api.get_candles(pair, 300, 1000, timestamp)
             timestamp = int(x[0]["from"]) - 1
             velas += x
 

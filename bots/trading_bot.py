@@ -12,6 +12,7 @@ from exchanges.exchange import Exchange
 @dataclass
 class TradingBot(ABC):
     exchange: Exchange
+    pair: str
     entry_value: float
     stop_gain: float
     stop_loss: float
@@ -51,15 +52,15 @@ class TradingBot(ABC):
     def run(self):
 
         st.info(
-            f"Iniciando sessão.\nPar: {self.exchange.pair} \nStop Loss: {self.stop_loss} \nStop Gain: {self.stop_gain}"
+            f"Iniciando sessão.\nPar: {self.pair} \nStop Loss: {self.stop_loss} \nStop Gain: {self.stop_gain}"
         )
-        st.info(f"Par: {self.exchange.pair}")
+        st.info(f"Par: {self.pair}")
         st.info(f"Stop Loss: {self.stop_loss}")
         st.info(f"Stop Gain: {self.stop_gain}")
 
         while True:
 
-            df = self.exchange.candles_to_df()
+            df = self.exchange.candles_to_df(pair=self.pair)
             st.line_chart(df["close"])
             last_datetime = timestamp_converter(df["from"].iloc[-1])
             tempo_servidor = timestamp_converter(
@@ -72,7 +73,7 @@ class TradingBot(ABC):
 
             entry_sign = self.sinal(df)
             status, order_id = self.exchange.api.buy_digital_spot(
-                self.exchange.pair, valor_entrada, entry_sign, 5
+                self.pair, valor_entrada, entry_sign, 5
             )
 
             if status:
