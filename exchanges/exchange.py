@@ -21,5 +21,5 @@ class Exchange(ABC):
         pass
 
     @abstractmethod
-    def candles_to_df(self,pair) -> pd.DataFrame:
+    def candles_to_df(self, pair) -> pd.DataFrame:
         pass
